@@ -29,6 +29,7 @@ public class DriveForward extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drive.drive.setSafetyEnabled(false);
     timer = Timer.getFPGATimestamp();
   }
 

@@ -33,12 +33,15 @@ public class DefaultDrive extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    drive.m_left.setInverted(false);
+    drive.m_right.setInverted(true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.arcadeDrive(forward, turn);
+    drive.arcadeDrive(drive.driveStick.getRawAxis(1), drive.driveStick.getRawAxis(2));
   }
 
   // Called once the command ends or is interrupted.
