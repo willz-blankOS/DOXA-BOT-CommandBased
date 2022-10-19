@@ -33,7 +33,7 @@ public class RobotContainer {
   private final Joystick driveStick = new Joystick(Constants.driveJoystick);
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final Command m_DefaultDrive = new DefaultDrive(m_driveSubsystem, m_forward, m_turn);
+  private final Command m_DefaultDrive = new DefaultDrive(m_driveSubsystem, driveStick.getRawAxis(1), driveStick.getRawAxis(2));
   private final Command m_DriveFoward = new DriveForward(m_driveSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */

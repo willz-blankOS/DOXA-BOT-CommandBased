@@ -45,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     m_left = new MotorControllerGroup(m_frontleftController, m_rearleftController);
     m_right = new MotorControllerGroup(m_rearRightController, m_frontRightController);
-    m_right.setInverted(true);
+    m_left.setInverted(true);
     driveStick = new Joystick(Constants.driveJoystick);
     drive = new DifferentialDrive(m_left, m_right);
   }
@@ -53,10 +53,6 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  public void driveStraight(){
-    drive.tankDrive(0.6, 0.6);
   }
 
   public void arcadeDrive(Double power, Double rotation){

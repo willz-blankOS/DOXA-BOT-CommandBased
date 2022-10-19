@@ -8,26 +8,27 @@ import frc.robot.subsystems.DriveSubsystem;
 
 import java.util.function.DoubleSupplier;
 
+import javax.print.attribute.standard.PrinterIsAcceptingJobs;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class DefaultDrive extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final DriveSubsystem m_drive;
-  private final Double m_forward;
-  private final Double m_turn;
-
+  private final DriveSubsystem drive;
+  private double forward;
+  private double turn;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
   public DefaultDrive(DriveSubsystem drive, double forward, double turn) {
-    this.m_drive = drive;
-    this.m_forward = forward;
-    this.m_turn = turn;
+    this.drive = drive;
+    this.forward = forward;
+    this.turn = turn;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_drive);
+    addRequirements(drive);
   }
 
   // Called when the command is initially scheduled.
@@ -37,7 +38,7 @@ public class DefaultDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.arcadeDrive(m_forward, m_turn);
+    drive.arcadeDrive(forward, turn);
   }
 
   // Called once the command ends or is interrupted.

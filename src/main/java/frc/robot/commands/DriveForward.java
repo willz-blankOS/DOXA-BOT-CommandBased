@@ -29,25 +29,25 @@ public class DriveForward extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      timer = Timer.getFPGATimestamp();
+    timer = Timer.getFPGATimestamp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      drive.arcadeDrive(0.6, 0.6);
+    drive.arcadeDrive(0.5, 0.0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-        drive.arcadeDrive(0.0, 0.0);
+    drive.arcadeDrive(0.0, 0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Timer.getFPGATimestamp() > timer + 5){
+    if (Timer.getFPGATimestamp() > timer + 3){
         return true;
     }else{
         return false;
