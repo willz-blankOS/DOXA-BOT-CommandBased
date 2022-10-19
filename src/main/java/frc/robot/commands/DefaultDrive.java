@@ -34,6 +34,7 @@ public class DefaultDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drive.drive.setSafetyEnabled(true);
     drive.m_left.setInverted(false);
     drive.m_right.setInverted(true);
   }
