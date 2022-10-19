@@ -23,8 +23,8 @@ public class DriveSubsystem extends SubsystemBase {
   //JOYSTICK
   public Joystick driveStick;
 
-  public DoubleSupplier power;
-  public DoubleSupplier rotation;
+  public double power;
+  public double rotation;
 
   //CREATE MOTOR CONTROLLER OBJECTS AND GROUP THEM
   //RIGHT SIDE
@@ -54,8 +54,8 @@ public class DriveSubsystem extends SubsystemBase {
     drive.tankDrive(0.6, 0.6);
   }
 
-  public void arcadeDrive(Double m_forward, Double m_turn){
-    drive.arcadeDrive(m_forward, m_turn);
+  public void arcadeDrive(Double power, Double rotation){
+    drive.arcadeDrive(power, rotation);
   }
 
   @Override
