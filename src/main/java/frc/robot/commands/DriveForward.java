@@ -15,6 +15,10 @@ public class DriveForward extends CommandBase {
   private final DriveSubsystem drive;
 
   private double timer;
+  private double heading;
+  private double error;
+  private double kP = 1;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -31,18 +35,20 @@ public class DriveForward extends CommandBase {
   public void initialize() {
     drive.drive.setSafetyEnabled(false);
     timer = Timer.getFPGATimestamp();
+    heading = drive.gyro.getAngle();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.arcadeDrive(0.5, 0.0);
+    error = heading - drive.gyro.getAngle();
+    drive.tankDrive(1 + kP * error, 1 - kP * error);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drive.arcadeDrive(0.0, 0.0);
+    drive.tankDrive(0.0, 0.0);
   }
 
   // Returns true when the command should end.
