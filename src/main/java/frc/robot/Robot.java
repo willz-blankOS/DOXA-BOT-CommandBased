@@ -18,6 +18,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private Command drive;
+  private Command fowardDrive;
   private RobotContainer m_robotContainer;
 
   /**
@@ -58,10 +59,11 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    fowardDrive = m_robotContainer.getDriveFoward();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if(fowardDrive != null){
+      fowardDrive.schedule();
     }
   }
 
@@ -79,6 +81,9 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+    if(fowardDrive != null){
+      fowardDrive.cancel();
     }
   }
 

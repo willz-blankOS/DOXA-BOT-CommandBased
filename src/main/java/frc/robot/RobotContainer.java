@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DefaultDrive;
+import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -33,7 +34,7 @@ public class RobotContainer {
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Command m_DefaultDrive = new DefaultDrive(m_driveSubsystem, m_forward, m_turn);
-  
+  private final Command m_DriveFoward = new DriveForward(m_driveSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,5 +65,9 @@ public class RobotContainer {
 
   public Command getDefaultDrive(){
     return m_DefaultDrive;
+  }
+
+  public Command getDriveFoward(){
+    return m_DriveFoward;
   }
 }

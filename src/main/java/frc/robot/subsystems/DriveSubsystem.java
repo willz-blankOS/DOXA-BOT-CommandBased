@@ -50,17 +50,17 @@ public class DriveSubsystem extends SubsystemBase {
     drive = new DifferentialDrive(m_left, m_right);
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
   public void driveStraight(){
     drive.tankDrive(0.6, 0.6);
   }
 
   public void arcadeDrive(Double power, Double rotation){
     drive.arcadeDrive(power, rotation);
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   @Override
