@@ -42,7 +42,7 @@ public class DriveForward extends CommandBase {
   @Override
   public void execute() {
     error = heading - drive.gyro.getAngle();
-    drive.tankDrive(1 + kP * error, 1 - kP * error);
+    drive.arcadeDrive(0.4 * (1 - kP * error), 0.0);
   }
 
   // Called once the command ends or is interrupted.
