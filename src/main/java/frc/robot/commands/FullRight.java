@@ -5,28 +5,32 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.DriveSubsystem;
-
-import java.util.function.DoubleSupplier;
-
-import javax.print.attribute.standard.PrinterIsAcceptingJobs;
-
+import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class DefaultDrive extends CommandBase {
+public class FullRight extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveSubsystem drive;
-  private double forward;
-  private double turn;
+
+  private double Error;
+  private double target;
+  private double kP = 1;
+  private double kI;
+
+  private double timer = 0;
+
+  private PIDController pid;
+
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new FullRight.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DefaultDrive(DriveSubsystem drive, double forward, double turn) {
+  public FullRight(DriveSubsystem drive) {
     this.drive = drive;
-    this.forward = forward;
-    this.turn = turn;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive);
   }
@@ -34,24 +38,45 @@ public class DefaultDrive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drive.drive.setSafetyEnabled(true);
-    drive.m_left.setInverted(false);
-    drive.m_right.setInverted(true);
+    drive.gyro.getAngle();
+    
+    if(drive.gyro.getAngle() > 270){
+      target = 360 - drive.gyro.getAngle();
+    }else{
+      target = drive.gyro.getAngle();
+    }
+    
+    Error = drive.gyro.getAngle() - target;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.arcadeDrive(drive.driveStick.getRawAxis(1) * 10, drive.driveStick.getRawAxis(2) * 10);
-  }
+    drive.arcadeDrive(0.0, 3 - (kP * Error));
+    
+    if(drive.gyro.getAngle() == target){
+      if(timer == 0){
+        timer = Timer.getFPGATimestamp();
+      }
+    }else if(drive.gyro.getAngle() != target){
+      timer = 0;
+    }
+  } 
+
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    drive.drive.stopMotor();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if(Timer.getFPGATimestamp() - timer > 3){
+      return true;
+    }else{
+      return false;
+    }
   }
 }

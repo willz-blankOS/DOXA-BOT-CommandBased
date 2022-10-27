@@ -8,6 +8,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 /** An example command that uses an example subsystem. */
 public class DriveForward extends CommandBase {
@@ -17,8 +18,9 @@ public class DriveForward extends CommandBase {
   private double timer;
   private double heading;
   private double error;
-  private double kP = 1;
-
+  private double k = 1;
+  private double kp;
+  private double kv;
   /**
    * Creates a new ExampleCommand.
    *
@@ -41,8 +43,8 @@ public class DriveForward extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    error = heading - drive.gyro.getAngle();
-    drive.arcadeDrive(0.4 * (1 - kP * error), 0.0);
+    error = -drive.gyro.getRate();
+    drive.tankDrive(2 + (-k * error), -2 + (k * error));
   }
 
   // Called once the command ends or is interrupted.

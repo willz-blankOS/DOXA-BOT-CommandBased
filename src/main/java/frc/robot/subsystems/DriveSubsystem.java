@@ -12,7 +12,10 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.robot.Constants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -23,6 +26,16 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 public class DriveSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   
+  //GAINS
+  public double kP = 1;
+  public double kI = 1;
+  public double kD = 1;
+
+  //PID CONTROLLER
+  public PIDController pid = new PIDController(kP, kI, kD);
+
+  //SIMPLE MOTOR FEED
+  SimpleMotorFeedforward feedforward;
 
   //JOYSTICK
   public Joystick driveStick;
@@ -32,8 +45,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public double power;
   public double rotation;
-  public double p1;
-  public double p2;
 
   //CREATE MOTOR CONTROLLER OBJECTS AND GROUP THEM
   //RIGHT SIDE
@@ -52,8 +63,10 @@ public class DriveSubsystem extends SubsystemBase {
   public DifferentialDrive drive;
 
   public DriveSubsystem() {
+    feedforward = new SimpleMotorFeedforward(kP, kI);
     m_left = new MotorControllerGroup(m_frontleftController, m_rearleftController);
     m_right = new MotorControllerGroup(m_rearRightController, m_frontRightController);
+    m_right.setInverted(true);
     m_left.setInverted(true);
     driveStick = new Joystick(Constants.driveJoystick);
     drive = new DifferentialDrive(m_left, m_right);
@@ -65,11 +78,19 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void arcadeDrive(Double power, Double rotation){
-    drive.arcadeDrive(power, rotation);
+    if(power > 0.1 || power < -0.1){
+      m_left.setVoltage(feedforward.calculate(power));
+      m_right.setVoltage(feedforward.calculate(power));
+    }
+    if(rotation > 0.1 || rotation < -0.1){
+      m_left.setVoltage(feedforward.calculate(rotation));
+      m_right.setVoltage(feedforward.calculate(-rotation));
+    }
   }
 
-  public void tankDrive(Double p1, Double p2) {
-    drive.tankDrive(p1, p2);
+  public void tankDrive(Double leftVelocity, Double rightVelocity) {
+    m_left.setVoltage(feedforward.calculate(leftVelocity));
+    m_right.setVoltage(feedforward.calculate(rightVelocity));
   }
 
   @Override
@@ -77,4 +98,3 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 }
-
