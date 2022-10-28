@@ -8,6 +8,10 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -19,10 +23,14 @@ public class FullRight extends CommandBase {
   private double target;
   private double kP = 1;
   private double kI;
+  private double kD;
+
+  private SimpleWidget getHeading;
+  private SimpleWidget getTargetHeading;
 
   private double timer = 0;
 
-  private PIDController pid;
+  private PIDController pid = new PIDController(kP, kI, kD);
 
   /**
    * Creates a new FullRight.
@@ -52,8 +60,11 @@ public class FullRight extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.arcadeDrive(0.0, 3 - (kP * Error));
+    drive.arcadeDrive(0.0, 3 + (kP * Error));
     
+    getHeading = Shuffleboard.getTab("Full Right Heading").add("Heading", drive.gyro.getAngle());
+    getTargetHeading = Shuffleboard.getTab("Full Right Target").add("Target", target);
+
     if(drive.gyro.getAngle() == target){
       if(timer == 0){
         timer = Timer.getFPGATimestamp();
