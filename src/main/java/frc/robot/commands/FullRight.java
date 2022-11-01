@@ -7,6 +7,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
@@ -21,15 +22,21 @@ public class FullRight extends CommandBase {
 
   private double Error;
   private double target;
-  private double kP = 1;
-  private double kI;
-  private double kD;
-
+  private double kP = 0.5;
+  private double kI = 1;
+  private double kD = 1;
+  private double kV;
+  private double kS;
+  
   private SimpleWidget getHeading;
   private SimpleWidget getTargetHeading;
 
   private double timer = 0;
 
+  // SIMPLE MOTOR FEED
+  private SimpleMotorFeedforward forwardFeed = new SimpleMotorFeedforward(kS, kV);
+
+  // PID CONTROLLER
   private PIDController pid = new PIDController(kP, kI, kD);
 
   /**
@@ -46,7 +53,6 @@ public class FullRight extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drive.gyro.getAngle();
     
     if(drive.gyro.getAngle() > 270){
       target = 360 - drive.gyro.getAngle();
@@ -60,18 +66,9 @@ public class FullRight extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.arcadeDrive(0.0, 3 + (kP * Error));
-    
-    getHeading = Shuffleboard.getTab("Full Right Heading").add("Heading", drive.gyro.getAngle());
-    getTargetHeading = Shuffleboard.getTab("Full Right Target").add("Target", target);
-
-    if(drive.gyro.getAngle() == target){
-      if(timer == 0){
-        timer = Timer.getFPGATimestamp();
-      }
-    }else if(drive.gyro.getAngle() != target){
-      timer = 0;
-    }
+    Error = drive.gyro.getAngle() - target;
+    drive.m_left.setVoltage(pid.calculate(Error, target) + forwardFeed.calculate(3));
+    drive.m_right.setVoltage(-(pid.calculate(Error, target) + forwardFeed.calculate(3)));
   } 
 
 

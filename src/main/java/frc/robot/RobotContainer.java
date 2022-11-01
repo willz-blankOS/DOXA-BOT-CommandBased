@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.FullRight;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +36,7 @@ public class RobotContainer {
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Command m_DefaultDrive = new DefaultDrive(m_driveSubsystem, m_forward, m_turn);
   private final Command m_DriveFoward = new DriveForward(m_driveSubsystem);
+  private final Command m_FullRight = new FullRight(m_driveSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -69,5 +71,8 @@ public class RobotContainer {
 
   public Command getDriveFoward(){
     return m_DriveFoward;
+  }
+  public Command getFullRight(){
+    return m_FullRight;  
   }
 }

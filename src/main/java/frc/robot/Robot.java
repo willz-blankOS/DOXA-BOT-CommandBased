@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CameraServerCvJNI;
@@ -22,10 +23,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private Command drive;
-  private Command fowardDrive;
+  private Command auto;
   private RobotContainer m_robotContainer;
+  
+  // SHUFFLEBOARD ELEMENT TO SELECT AUTO MODE
+  private SendableChooser<String> m_chooser = new SendableChooser<String>();
+  private String autoMode; /** String to get Auto mode */
+
 
   /*
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -42,6 +47,11 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    //ADDING AUTO OPTIONS
+    m_chooser.setDefaultOption("STRAIGHT_LINE_Auto", "STRAIGHT_LINE_AUTO");
+    m_chooser.addOption("90_TURN_AUTO", "90_TURN_AUTO");
+    SmartDashboard.putData("AUTO MODES", m_chooser);
   }
 
   /**
@@ -71,12 +81,21 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    fowardDrive = m_robotContainer.getDriveFoward();
+    autoMode = m_chooser.getSelected();
 
-    // schedule the autonomous command (example)
-    if(fowardDrive != null){
-      fowardDrive.schedule();
+    //SCHEDULE SELECTED AUTO
+    if(autoMode == "STRAIGHT_LINE_AUTO"){ /** STRAIGHT LINE AUTO */
+      auto = m_robotContainer.getDriveFoward();
+      if(auto != null){
+        auto.schedule();
+      }
+    }else if(autoMode == "90_TURN_AUTO"){
+      auto = m_robotContainer.getFullRight();
+      if(auto != null){
+        auto.schedule();
+      }
     }
+
   }
 
   /** This function is called periodically during autonomous. */
@@ -105,9 +124,6 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-    }
-    if(fowardDrive != null){
-      fowardDrive.cancel();
     }
   }
 
