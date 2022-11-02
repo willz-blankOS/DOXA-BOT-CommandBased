@@ -67,7 +67,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_left = new MotorControllerGroup(m_frontleftController, m_rearleftController);
     m_right = new MotorControllerGroup(m_rearRightController, m_frontRightController);
     m_right.setInverted(true);
-    m_left.setInverted(true);
     driveStick = new Joystick(Constants.driveJoystick);
     drive = new DifferentialDrive(m_left, m_right);
   }

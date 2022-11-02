@@ -50,8 +50,8 @@ public class DriveForward extends CommandBase {
   @Override
   public void execute() {
     error = -drive.gyro.getRate();
-    drive.m_left.setVoltage(-feedforward.calculate(2 + (k * error)));
-    drive.m_right.setVoltage(-feedforward.calculate(2 - (k * error)));
+    drive.m_left.setVoltage(feedforward.calculate(3 + (k * error)));
+    drive.m_right.setVoltage(feedforward.calculate(3 - (k * error)));
   }
 
   // Called once the command ends or is interrupted.

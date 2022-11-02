@@ -22,7 +22,7 @@ public class FullRight extends CommandBase {
 
   private double Error;
   private double target;
-  private double kP = 0.5;
+  private double kP = 2;
   private double kI = 1;
   private double kD = 1;
   private double kV;
@@ -54,7 +54,7 @@ public class FullRight extends CommandBase {
   @Override
   public void initialize() {
     
-    if(drive.gyro.getAngle() > 270){
+    if(drive.gyro.getAngle() + 90 > 360){
       target = 360 - drive.gyro.getAngle();
     }else{
       target = drive.gyro.getAngle();
@@ -67,8 +67,8 @@ public class FullRight extends CommandBase {
   @Override
   public void execute() {
     Error = drive.gyro.getAngle() - target;
-    drive.m_left.setVoltage(pid.calculate(drive.gyro.getAngle(), target) + forwardFeed.calculate(3));
-    drive.m_right.setVoltage(-(pid.calculate(drive.gyro.getAngle(), target) + forwardFeed.calculate(3)));
+    drive.m_left.setVoltage(forwardFeed.calculate(kP * Error));
+    drive.m_right.setVoltage(-forwardFeed.calculate(kP * Error));
   } 
 
 

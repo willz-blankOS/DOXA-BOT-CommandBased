@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CameraServerCvJNI;
 import edu.wpi.first.networktables.NetworkTable;
@@ -27,6 +31,8 @@ public class Robot extends TimedRobot {
   private Command auto;
   private RobotContainer m_robotContainer;
   
+  private AHRS Gyro = new AHRS(SPI.Port.kMXP);
+
   // SHUFFLEBOARD ELEMENT TO SELECT AUTO MODE
   private SendableChooser<String> m_chooser = new SendableChooser<String>();
   private String autoMode; /** String to get Auto mode */
@@ -52,6 +58,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("STRAIGHT_LINE_Auto", "STRAIGHT_LINE_AUTO");
     m_chooser.addOption("90_TURN_AUTO", "90_TURN_AUTO");
     SmartDashboard.putData("AUTO MODES", m_chooser);
+    Gyro.calibrate();
   }
 
   /**
@@ -68,6 +75,8 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("HEADING", Gyro.getAngle());
+    System.out.print(Gyro.isConnected());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
