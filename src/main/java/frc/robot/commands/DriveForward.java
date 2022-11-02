@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -20,7 +21,11 @@ public class DriveForward extends CommandBase {
   private double error;
   private double k = 1;
   private double kp;
-  private double kv;
+  private double kv = 1;
+  private double ks = 1;
+
+  private SimpleMotorFeedforward feedforward;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -38,13 +43,15 @@ public class DriveForward extends CommandBase {
     drive.drive.setSafetyEnabled(false);
     timer = Timer.getFPGATimestamp();
     heading = drive.gyro.getAngle();
+    feedforward = new SimpleMotorFeedforward(ks, kv);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     error = -drive.gyro.getRate();
-    drive.tankDrive(2 + (-k * error), -2 + (k * error));
+    drive.m_left.setVoltage(-feedforward.calculate(2 + (k * error)));
+    drive.m_right.setVoltage(-feedforward.calculate(2 - (k * error)));
   }
 
   // Called once the command ends or is interrupted.

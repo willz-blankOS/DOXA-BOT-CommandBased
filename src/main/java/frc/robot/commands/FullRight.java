@@ -67,8 +67,8 @@ public class FullRight extends CommandBase {
   @Override
   public void execute() {
     Error = drive.gyro.getAngle() - target;
-    drive.m_left.setVoltage(pid.calculate(Error, target) + forwardFeed.calculate(3));
-    drive.m_right.setVoltage(-(pid.calculate(Error, target) + forwardFeed.calculate(3)));
+    drive.m_left.setVoltage(pid.calculate(drive.gyro.getAngle(), target) + forwardFeed.calculate(3));
+    drive.m_right.setVoltage(-(pid.calculate(drive.gyro.getAngle(), target) + forwardFeed.calculate(3)));
   } 
 
 

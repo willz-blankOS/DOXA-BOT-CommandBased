@@ -78,11 +78,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void arcadeDrive(Double power, Double rotation){
-    if(power > 0.1 || power < -0.1){
+    if(power > 0.15 || power < -0.15){
       m_left.setVoltage(feedforward.calculate(power));
       m_right.setVoltage(feedforward.calculate(power));
     }
-    if(rotation > 0.1 || rotation < -0.1){
+    if(rotation > 0.15 || rotation < -0.15){
       m_left.setVoltage(feedforward.calculate(rotation));
       m_right.setVoltage(feedforward.calculate(-rotation));
     }
