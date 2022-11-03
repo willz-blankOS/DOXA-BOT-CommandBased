@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,12 +14,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.CameraServerCvJNI;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,6 +27,8 @@ public class Robot extends TimedRobot {
   private Command auto;
   private RobotContainer m_robotContainer;
   
+  private CameraServer limelightCameraServer;
+
   private AHRS Gyro = new AHRS(SPI.Port.kMXP);
 
   // SHUFFLEBOARD ELEMENT TO SELECT AUTO MODE
@@ -58,7 +56,6 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("STRAIGHT_LINE_Auto", "STRAIGHT_LINE_AUTO");
     m_chooser.addOption("90_TURN_AUTO", "90_TURN_AUTO");
     SmartDashboard.putData("AUTO MODES", m_chooser);
-    Gyro.calibrate();
   }
 
   /**
@@ -93,42 +90,33 @@ public class Robot extends TimedRobot {
     autoMode = m_chooser.getSelected();
 
     //SCHEDULE SELECTED AUTO
-    if(autoMode == "STRAIGHT_LINE_AUTO"){ /** STRAIGHT LINE AUTO */
-      auto = m_robotContainer.getDriveFoward();
-      if(auto != null){
-        auto.schedule();
-      }
-    }else if(autoMode == "90_TURN_AUTO"){
-      auto = m_robotContainer.getFullRight();
-      if(auto != null){
-        auto.schedule();
-      }
+    switch(autoMode){
+      case "STRAIGHT_LINE_AUTO": /** IF | STRAIGHT LINE AUTO | IS SELECTED */
+        auto = m_robotContainer.getDriveFoward();
+        if(auto != null){
+          auto.schedule();
+        }
+        break;
+      case "90_TURN_AUTO": /** IF | 90 TURN AUTO | IS SELECTED */
+        auto = m_robotContainer.getFullRight();
+        if(auto != null){
+          auto.schedule();
+        }
+        break;
     }
 
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-    /*
-    //read values periodically
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
-
-    //post to smart dashboard periodically
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
-    */
-  }
+  public void autonomousPeriodic() {}
 
   @Override
   public void teleopInit() {
     drive = m_robotContainer.getDefaultDrive();
 
     // This makes sure that the autonomous stops running when
-    // teleop starts running. If you want the autonomous to
+    // teleop starts runn}ing. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
@@ -141,7 +129,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     if(drive != null){
       drive.schedule();
-    }
+    } 
   }
 
   @Override

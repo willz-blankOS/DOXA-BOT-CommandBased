@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.DriveForward;
@@ -15,6 +12,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FullRight;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -27,14 +25,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-
-  private double m_forward;
-  private double m_turn;
-
-  private final Joystick driveStick = new Joystick(Constants.driveJoystick);
+  private final LimelightSubsystem limelight = new LimelightSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final Command m_DefaultDrive = new DefaultDrive(m_driveSubsystem, m_forward, m_turn);
+  private final Command m_DefaultDrive = new DefaultDrive(m_driveSubsystem, limelight);
   private final Command m_DriveFoward = new DriveForward(m_driveSubsystem);
   private final Command m_FullRight = new FullRight(m_driveSubsystem);
 
@@ -50,10 +44,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {
-    m_forward = driveStick.getRawAxis(1);
-    m_turn = driveStick.getRawAxis(2);
-  }
+  private void configureButtonBindings() {}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

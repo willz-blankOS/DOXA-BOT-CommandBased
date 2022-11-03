@@ -22,8 +22,8 @@ public class FullRight extends CommandBase {
 
   private double Error;
   private double target;
-  private double kP = 2;
-  private double kI = 1;
+  private double kP = 0.45;
+  private double kI = 0.1;
   private double kD = 1;
   private double kV;
   private double kS;
