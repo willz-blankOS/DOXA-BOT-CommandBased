@@ -53,7 +53,7 @@ public class FullRight extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+ /*   
     if(drive.gyro.getAngle() + 90 > 360){
       target = 360 - drive.gyro.getAngle();
     }else{
@@ -61,14 +61,13 @@ public class FullRight extends CommandBase {
     }
     
     Error = drive.gyro.getAngle() - target;
+  */
   }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Error = drive.gyro.getAngle() - target;
-    drive.m_left.setVoltage(forwardFeed.calculate(kP * Error));
-    drive.m_right.setVoltage(-forwardFeed.calculate(kP * Error));
+    //Error = drive.gyro.getAngle() - target;
+    drive.arcadeDrive(0.0, kP * Error);
   } 
 
 

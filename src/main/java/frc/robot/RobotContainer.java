@@ -10,6 +10,7 @@ import frc.robot.commands.DefaultDrive;
 import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FullRight;
+import frc.robot.commands.kickTheBot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -31,6 +32,7 @@ public class RobotContainer {
   private final Command m_DefaultDrive = new DefaultDrive(m_driveSubsystem, limelight);
   private final Command m_DriveFoward = new DriveForward(m_driveSubsystem);
   private final Command m_FullRight = new FullRight(m_driveSubsystem);
+  private final Command m_kickTheBot = new kickTheBot(m_driveSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -54,6 +56,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return m_autoCommand;
+  }
+
+  public Command getKickTheBot() {
+    return m_kickTheBot;
   }
 
   public Command getDefaultDrive(){

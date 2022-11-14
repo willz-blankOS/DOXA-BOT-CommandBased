@@ -5,6 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -29,19 +33,22 @@ public class Robot extends TimedRobot {
   
   private CameraServer limelightCameraServer;
 
-  private AHRS Gyro = new AHRS(SPI.Port.kMXP);
+  private AnalogGyro Gyro = new AnalogGyro(0);
 
   // SHUFFLEBOARD ELEMENT TO SELECT AUTO MODE
   private SendableChooser<String> m_chooser = new SendableChooser<String>();
   private String autoMode; /** String to get Auto mode */
 
+  private double x;
+  private double y;
+  private double area;
+  
+  private NetworkTable table;
+  private NetworkTableEntry tx;
+  private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
+  
 
-  /*
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  NetworkTableEntry tx = table.getEntry("tx");
-  NetworkTableEntry ty = table.getEntry("ty");
-  NetworkTableEntry ta = table.getEntry("ta");
-  */
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -52,9 +59,20 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+    table = NetworkTableInstance.getDefault().getTable("limelight");
+    tx = table.getEntry("tx");
+    ty = table.getEntry("ty");
+    ta = table.getEntry("ta");
+    
+    SmartDashboard.getNumber("Limelight X", x);
+    SmartDashboard.getNumber("Limelight Y", y);
+    SmartDashboard.getNumber("Limelight A", area);
+
+
     //ADDING AUTO OPTIONS
     m_chooser.setDefaultOption("STRAIGHT_LINE_Auto", "STRAIGHT_LINE_AUTO");
     m_chooser.addOption("90_TURN_AUTO", "90_TURN_AUTO");
+    m_chooser.addOption("KICK_THE_BOT_AUTO", "KICK_THE_BOT_AUTO");
     SmartDashboard.putData("AUTO MODES", m_chooser);
   }
 
@@ -73,7 +91,9 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("HEADING", Gyro.getAngle());
-    System.out.print(Gyro.isConnected());
+    x = tx.getDouble(0.0);
+    y = ty.getDouble(0.0);
+    area = ta.getDouble(0.0);
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -99,6 +119,12 @@ public class Robot extends TimedRobot {
         break;
       case "90_TURN_AUTO": /** IF | 90 TURN AUTO | IS SELECTED */
         auto = m_robotContainer.getFullRight();
+        if(auto != null){
+          auto.schedule();
+        }
+        break;
+      case "KICK_THE_BOT_AUTO":
+        auto = m_robotContainer.getKickTheBot();
         if(auto != null){
           auto.schedule();
         }

@@ -7,6 +7,10 @@ package frc.robot.commands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
+import javax.print.attribute.standard.PrinterIsAcceptingJobs;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,15 +22,24 @@ public class DefaultDrive extends CommandBase {
   private final DriveSubsystem drive; /** DRIVE SUBSYSTEM */
   private final LimelightSubsystem limelight; /** LIMELIGHT SUBSYSTEM !! NOT BEING USED YET !! */
 
-  // PID VALUES / GAINS
-  private final double kP = 0.35; /** PERIPHERAL */
+  // PID CONTROLLER AND pid PID VALUES
+  private PIDController pid; /** PID CONTROLLER */
+  private final double kP = 0.135; /** PERIPHERAL */ 
   private final double kI = 0.1; /** INTEGRAL */
+  private final double kD = 0.1;
+
+  // SIMPLE MOTOR FEED FORWARD VALUES
+  private double kS;
+  private double kV;
 
   // DOUBLE VARIABLES TO STORE LIMELIGHT VALUES
   private double x; /** HORIZONTAL OFFSET */
   private double y; /** VERTICAL OFFSET */
   private double area; /** TARGET AREA */
   private boolean isTarget; /** CHECK IF THERE IS A TARGET */
+
+  // SIMPLE MOTOR FORWARD FEED
+  private SimpleMotorFeedforward feedforward;
 
   // NETWORK TABLE OBJECTS TO GET LIMELIGHT VALUES FROM SHUFFLEBOARD
   NetworkTable table;
@@ -53,7 +66,9 @@ public class DefaultDrive extends CommandBase {
     drive.drive.setSafetyEnabled(true);
     drive.m_left.setInverted(false); 
     drive.m_right.setInverted(true); /** INVERT RIGHT SIDE */
-    
+    feedforward = new SimpleMotorFeedforward(kS, kV);
+    pid = new PIDController(kP, kI, kD);
+
     // TO OBTAIN LIMELIGHT VALUES
     table = NetworkTableInstance.getDefault().getTable("limelight");
     tv = table.getEntry("tv");
@@ -70,20 +85,14 @@ public class DefaultDrive extends CommandBase {
     area = ta.getDouble(0.0);
     isTarget = tv.getBoolean(false);
 
+    System.out.print("\t" + x + "\t");
+
     // DRIVE
-    if(!drive.driveStick.getRawButton(8) || !isTarget){ /** IF ROBOT IS NOT MEANT TO SNAP TO TARGET */
+    if(drive.driveStick.getRawButton(8)){ /** IF ROBOT IS NOT MEANT TO SNAP TO TARGET */
+      drive.arcadeDrive(drive.driveStick.getRawAxis(1) * 5, kP * x);
+    }else{ /** IF ROBOT IS MEANT TO SNAP TO TARGET */
       drive.arcadeDrive(drive.driveStick.getRawAxis(1) * 10, drive.driveStick.getRawAxis(2) * 10);
-    }else if(drive.driveStick.getRawButton(8)){ /** IF ROBOT IS MEANT TO SNAP TO TARGET */
-      if(isTarget){
-        if(drive.driveStick.getRawAxis(1) < 0.1 && drive.driveStick.getRawAxis(1) > -0.1){ /** CHECK IF THERE IS NOT USER INPUT */
-          drive.m_left.setVoltage( kP * x);
-          drive.m_right.setVoltage( kP * -x);
-        }else{ /** IF THERE IS USER INPUT */
-          drive.m_left.setVoltage(drive.driveStick.getRawAxis(1) * 4 + (kP * x));
-          drive.m_right.setVoltage(drive.driveStick.getRawAxis(1) * 4 + (kP * -x));
-        }  
-      }
-    }
+    }  
   }
 
   // Called once the command ends or is interrupted.

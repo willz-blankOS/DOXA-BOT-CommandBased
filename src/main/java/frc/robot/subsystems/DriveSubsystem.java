@@ -14,6 +14,7 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.SPI;
@@ -39,9 +40,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   //JOYSTICK
   public Joystick driveStick;
-
-  //NAV-X
-  public AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   public double power;
   public double rotation;
@@ -77,19 +75,22 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void arcadeDrive(Double power, Double rotation){
-    if(power > 0.15 || power < -0.15){
+    if(power >= 0.2 || power <= -0.2){
       m_left.setVoltage(feedforward.calculate(power));
       m_right.setVoltage(feedforward.calculate(power));
+      drive.feed();
     }
-    if(rotation > 0.15 || rotation < -0.15){
+    if(rotation >= 0.2 || rotation <= -0.2){
       m_left.setVoltage(feedforward.calculate(rotation));
       m_right.setVoltage(feedforward.calculate(-rotation));
+      drive.feed();
     }
   }
 
   public void tankDrive(Double leftVelocity, Double rightVelocity) {
     m_left.setVoltage(feedforward.calculate(leftVelocity));
     m_right.setVoltage(feedforward.calculate(rightVelocity));
+    drive.feed();
   }
 
   @Override
