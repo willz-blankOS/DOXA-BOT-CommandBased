@@ -27,7 +27,6 @@ import com.kauailabs.navx.frc.AHRS;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private Command drive;
   private Command auto;
   private RobotContainer m_robotContainer;
   
@@ -139,7 +138,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    drive = m_robotContainer.getDefaultDrive();
 
     // This makes sure that the autonomous stops running when
     // teleop starts runn}ing. If you want the autonomous to
@@ -153,9 +151,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    if(drive != null){
-      drive.schedule();
-    } 
+    
   }
 
   @Override

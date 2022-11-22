@@ -7,6 +7,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
+import java.util.function.DoubleSupplier;
+
 import javax.print.attribute.standard.PrinterIsAcceptingJobs;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -17,10 +19,11 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class DefaultDrive extends CommandBase {
+public class DefaultDriveLimelight extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveSubsystem drive; /** DRIVE SUBSYSTEM */
   private final LimelightSubsystem limelight; /** LIMELIGHT SUBSYSTEM !! NOT BEING USED YET !! */
+  private Double power, rotation;
 
   // PID CONTROLLER AND pid PID VALUES
   private PIDController pid; /** PID CONTROLLER */
@@ -53,9 +56,11 @@ public class DefaultDrive extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DefaultDrive(DriveSubsystem drive, LimelightSubsystem limelight) {
+  public DefaultDriveLimelight(DriveSubsystem drive, LimelightSubsystem limelight, double power, double rotation) {
     this.drive = drive;
     this.limelight = limelight; /** !! NOT BEING USED YET !! */
+    this.power = power;
+    this.rotation = rotation;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drive, limelight);
   }
@@ -85,13 +90,13 @@ public class DefaultDrive extends CommandBase {
     area = ta.getDouble(0.0);
     isTarget = tv.getBoolean(false);
 
-    System.out.print("\t" + x + "\t");
+    //System.out.print("\t" + x + "\t");
 
     // DRIVE
     if(drive.driveStick.getRawButton(8)){ /** IF ROBOT IS NOT MEANT TO SNAP TO TARGET */
-      drive.arcadeDrive(drive.driveStick.getRawAxis(1) * 5, kP * x);
+      drive.arcadeDrive(power * 5, kP * x);
     }else{ /** IF ROBOT IS MEANT TO SNAP TO TARGET */
-      drive.arcadeDrive(drive.driveStick.getRawAxis(1) * 10, drive.driveStick.getRawAxis(2) * 10);
+      drive.arcadeDrive(power * 10, rotation * 10);
     }  
   }
 

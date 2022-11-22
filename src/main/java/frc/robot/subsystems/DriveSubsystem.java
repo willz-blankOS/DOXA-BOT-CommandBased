@@ -4,10 +4,14 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import frc.robot.Constants;
 
@@ -31,6 +35,10 @@ public class DriveSubsystem extends SubsystemBase {
   public double kP = 1;
   public double kI = 1;
   public double kD = 1;
+
+  PhotonCamera camera = new PhotonCamera("photonvision");
+
+  public List<PhotonTrackedTarget> target;
 
   //PID CONTROLLER
   public PIDController pid = new PIDController(kP, kI, kD);
@@ -72,6 +80,8 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    var result = camera.getLatestResult();
+    target = result.getTargets();
   }
 
   public void arcadeDrive(Double power, Double rotation){
