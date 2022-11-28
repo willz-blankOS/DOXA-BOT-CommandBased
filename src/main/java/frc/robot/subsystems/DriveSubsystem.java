@@ -103,6 +103,10 @@ public class DriveSubsystem extends SubsystemBase {
     drive.feed();
   }
 
+  public void curvatureDrive(Double speed, Double rotation){
+    drive.curvatureDrive(driveStick.getRawAxis(1), driveStick.getRawAxis(2), true);
+  }
+
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation

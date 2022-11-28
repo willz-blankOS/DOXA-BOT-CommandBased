@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import javax.xml.stream.events.Comment;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.XboxController.Axis;
+import frc.robot.commands.CurvatureDrive;
 import frc.robot.commands.DefaultDriveLimelight;
 import frc.robot.commands.DriveForward;
 import frc.robot.commands.ExampleCommand;
@@ -35,6 +39,8 @@ public class RobotContainer {
   private final Command m_DriveFoward = new DriveForward(m_driveSubsystem);
   private final Command m_FullRight = new FullRight(m_driveSubsystem);
   private final Command m_kickTheBot = new kickTheBot(m_driveSubsystem);
+  private final Command m_curveDrive = new CurvatureDrive(m_driveSubsystem, limelight, m_driveSubsystem.driveStick.getRawAxis(1), m_driveSubsystem.driveStick.getRawAxis(2));
+  private final Command m_defaultDrive = new DefaultDriveLimelight(m_driveSubsystem, limelight, m_driveSubsystem.driveStick.getRawAxis(1), m_driveSubsystem.driveStick.getRawAxis(2));
 
   private Joystick driver = new Joystick(0);
 
@@ -43,9 +49,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    m_driveSubsystem.setDefaultCommand(
-      new DefaultDriveLimelight(m_driveSubsystem, limelight, driver.getRawAxis(1), driver.getRawAxis(2))
-    );
   }
 
   /**
@@ -75,5 +78,13 @@ public class RobotContainer {
   }
   public Command getFullRight(){
     return m_FullRight;  
+  }
+
+  public Command getDefaultDrive(){
+    return m_defaultDrive;
+  }
+
+  public Command getCurveDrive(){
+    return m_curveDrive;
   }
 }

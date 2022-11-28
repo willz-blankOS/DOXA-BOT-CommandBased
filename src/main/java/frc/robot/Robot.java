@@ -27,6 +27,7 @@ import com.kauailabs.navx.frc.AHRS;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command m_teleopCommand;
   private Command auto;
   private RobotContainer m_robotContainer;
   
@@ -36,7 +37,9 @@ public class Robot extends TimedRobot {
 
   // SHUFFLEBOARD ELEMENT TO SELECT AUTO MODE
   private SendableChooser<String> m_chooser = new SendableChooser<String>();
+  private SendableChooser<String> m_teleopchooser = new SendableChooser<String>();
   private String autoMode; /** String to get Auto mode */
+  private String teleopMode;
 
   private double x;
   private double y;
@@ -73,6 +76,10 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("90_TURN_AUTO", "90_TURN_AUTO");
     m_chooser.addOption("KICK_THE_BOT_AUTO", "KICK_THE_BOT_AUTO");
     SmartDashboard.putData("AUTO MODES", m_chooser);
+
+    m_teleopchooser.setDefaultOption("DEFAULT DRIVE", "DEFAULT DRIVE");
+    m_teleopchooser.addOption("CURVE DRIVE", "CURVE DRIVE");
+    SmartDashboard.putData("TELOP MODES", m_teleopchooser);
   }
 
   /**
@@ -145,6 +152,19 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+    teleopMode = m_teleopchooser.getSelected();
+    switch(teleopMode){
+      case "DEFAULT DRIVE":
+        m_teleopCommand = m_robotContainer.getDefaultDrive();
+        if(m_teleopCommand != null){
+          m_teleopCommand.schedule();
+        }
+      case "CURVA DRIVE":
+        m_teleopCommand = m_robotContainer.getCurveDrive();
+        if(m_teleopCommand != null){
+          m_teleopCommand.schedule();
+        }
     }
   }
 

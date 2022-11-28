@@ -94,9 +94,9 @@ public class DefaultDriveLimelight extends CommandBase {
 
     // DRIVE
     if(drive.driveStick.getRawButton(8)){ /** IF ROBOT IS NOT MEANT TO SNAP TO TARGET */
-      drive.arcadeDrive(power * 5, kP * x);
+      drive.arcadeDrive(drive.driveStick.getRawAxis(1) * 5, kP * x);
     }else{ /** IF ROBOT IS MEANT TO SNAP TO TARGET */
-      drive.arcadeDrive(power * 10, rotation * 10);
+      drive.arcadeDrive(drive.driveStick.getRawAxis(1) * 10, drive.driveStick.getRawAxis(2) * 10);
     }  
   }
 
